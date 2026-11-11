@@ -17,10 +17,6 @@ initial_positions = { # first pair is rotation axis
     "Z_piece" : [(5, 20), (5, 21), (4, 21), (6, 20)]
     }
 
-def valid_positions(pos_list):
-    #add board check
-    return True
-
 class Block:
     def __init__(self, x, y, color):
         self.x = x
@@ -30,46 +26,49 @@ class Block:
 class Piece:
     def __init__(self, type):
         self.type = type
-        blocks = [Block(x, y, colors[type]) for x, y in initial_positions[type]]
+        self.blocks = [Block(x, y, colors[type]) for x, y in initial_positions[type]]
 
-    def move(self, direction):
+    def move(self, direction, board):
         match(direction):
             case "left":
-                if all(b.x > 1 for b in self.blocks):
+                new_pos = [(b.x - 1, b.y) for b in self.blocks]
+                if board.is_valid(new_pos):
                     for b in self.blocks:
                         b.x -= 1
-                #add board check
+
             case "right":
-                if all(b.x < 10 for b in self.blocks):
+                new_pos = [(b.x + 1, b.y) for b in self.blocks]
+                if board.is_valid(new_pos):
                     for b in self.blocks:
                         b.x += 1
-                #add board check
+
             case "down":
-                if all(b.y > 1 for b in self.blocks):
+                new_pos = [(b.x, b.y - 1) for b in self.blocks]
+                if board.is_valid(new_pos):
                     for b in self.blocks:
                         b.y -= 1
-                #add board check
-                else:
-                    self.is_placed = True
+                else: 
+                    return False
+        return True
 
     def new_positions_rotate(self):
         if self.type == "O_piece":
-            res = [(b.x, b.y) for b in self.blocks]
-        elif self.type == "I_piece":
+            res = [[b.x, b.y] for b in self.blocks]
+        #elif self.type == "I_piece":
             #add I_piece case
-            pass
+        #    pass
         else:
             offset = (self.blocks[0].x, self.blocks[0].y)
-            res = [(b.x - offset[0], b.y - offset[1]) for b in self.blocks]
+            res = [[b.x - offset[0], b.y - offset[1]] for b in self.blocks]
             for pair in res:
                 pair[0], pair[1] = pair[1], -pair[0]
                 pair[0] += offset[0]
                 pair[1] += offset[1]
         return res
     
-    def rotate(self):
-        possible_new_positions = self.new_positions_rotate
-        if valid_positions(possible_new_positions):
+    def rotate(self, board):
+        possible_new_positions = self.new_positions_rotate()
+        if board.is_valid(possible_new_positions):
             for i, b in enumerate(self.blocks):
                 b.x = possible_new_positions[i][0]
                 b.y = possible_new_positions[i][1]
