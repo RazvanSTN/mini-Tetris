@@ -1,7 +1,7 @@
 import sys
 import pygame
-from classes import Button
-import game
+from ui import Button
+import game_loop
 
 
 pygame.init()
