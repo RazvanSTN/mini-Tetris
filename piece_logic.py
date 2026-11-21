@@ -54,9 +54,9 @@ class Piece:
     def new_positions_rotate(self):
         if self.type == "O_piece":
             res = [[b.x, b.y] for b in self.blocks]
-        #elif self.type == "I_piece":
-            #add I_piece case
-        #    pass
+        elif self.type == "I_piece":
+            res = [[b.x, b.y] for b in self.blocks] # add I rotation logic
+
         else:
             offset = (self.blocks[0].x, self.blocks[0].y)
             res = [[b.x - offset[0], b.y - offset[1]] for b in self.blocks]
