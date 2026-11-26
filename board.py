@@ -20,16 +20,18 @@ class Board:
         lines = [0] * 25 # counts how many blocks are on a line
         for pos in self.occupied_cells:
             lines[pos[1]] += 1
+        to_delete = []
+        to_lower = [0] * 25 # to_lower[i] = x means line i needs to go down x rows
         for y, line_count in enumerate(lines):
             if line_count == 10:
                 ncleared += 1
-                to_delete = []
                 for item in self.occupied_cells:
                     if item[1] == y:
                         to_delete.append(item) #save to_delete items first so as not to change list while iterating
-                for item in to_delete:
-                    self.occupied_cells.remove(item)
-                for block in self.occupied_cells:
-                    if block[1] > y:
-                        block[1] -= 1
+                for i in range(y, 25):
+                    to_lower[i] += 1
+        for item in to_delete:
+            self.occupied_cells.remove(item)
+        for block in self.occupied_cells:
+            block[1] -= to_lower[block[1]]
         return ncleared
