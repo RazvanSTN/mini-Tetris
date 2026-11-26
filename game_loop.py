@@ -106,7 +106,7 @@ def ghost_cells(game):
 def draw_block(screen, x, y, color_name):
     if not is_visible(x, y):
         return
-    rect = cell_rect(x, y).inflate(-2, -2)
+    rect = cell_rect(x, y).inflate(0, 0)
     base = color_of(color_name)
     pygame.draw.rect(screen, base, rect)
     # little highlight so blocks do not look flat
@@ -135,7 +135,7 @@ def draw_board(screen, game):
         pygame.draw.line(screen, GRID_LINE, (BOARD_X, py), (BOARD_X + BOARD_W, py))
 
     # locked blocks
-    for (x, y), color in game.board.occupied_cells.items():
+    for (x, y, color) in game.board.occupied_cells:
         draw_block(screen, x, y, color)
 
     # current piece (+ ghost). After game over the new piece overlaps the
